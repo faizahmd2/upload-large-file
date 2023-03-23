@@ -8,7 +8,7 @@ function Upload() {
   const inputRef = useRef(null)
   
   async function uploadLargeFile() {
-    if(inputRef && inputRef.current.files && inputRef.current.files[0]) {
+    if(inputRef.current && inputRef.current.files && inputRef.current.files[0]) {
       const file = inputRef.current.files[0];
       const CHUNK_SIZE = 1024 * 1024
       const fileSize = file.size;
