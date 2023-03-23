@@ -15,7 +15,7 @@ function Upload() {
       const SIZE_IN_MEGABITE = fileSize / CHUNK_SIZE
 
       const chunkCount = Math.ceil(SIZE_IN_MEGABITE / 4); // Example: divide file into 5 chunks
-      const chunkSize = fileSize / 4
+      const chunkSize = 4 * CHUNK_SIZE
       const fileName = Date.now() + "_" + file.name;
 
       // Initiate upload event

@@ -26,14 +26,14 @@ app.post("/upload", async (req, res) => {
 });
 
 app.get("/upload-event/:type", async (req, res) => {
-    let { fileName, fileSize } = req.query.fileName;
+    let { fileName, fileSize } = req.query;
     let type = req.params.type
 
     if(!fileName || !type || (type == 'start' && !fileSize)) return res.json({status: 0, message: "Parameters missing"})
 
     let {status, message} = await utils.handleUploadEvent(fileName, type, +fileSize)
-    console.log("STATUS -",status)
-    console.log("MESSAGE -",message)
+    // console.log("STATUS -",status)
+    // console.log("MESSAGE -",message)
     return res.json({status, message})
 })
 
