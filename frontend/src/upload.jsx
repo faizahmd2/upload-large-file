@@ -1,11 +1,15 @@
 import { useRef, useState } from 'react';
 import './upload.css'
+import useExitPrompt from './useExitPrompt';
 const apiBaseUrl = 'http://localhost:4100'
+let controller = new AbortController()
 
 function Upload() {
   const [upload, setUpload] = useState(false)
   const [fileInfo, setFileInfo] = useState({})
   const inputRef = useRef(null)
+  const progressRef = useRef(null)
+  const percentageRef = useRef(null)
   
   async function uploadLargeFile() {
     if(fileInfo.file) {
@@ -30,15 +34,23 @@ function Upload() {
       let alertMessage = ""
       let successCount=0
       for (let i = 0; i < chunkCount; i++) {
+        if(controller.signal.aborted) break
         const start = i * chunkSize
         const end = Math.min(start + chunkSize, fileSize)
+
+        // handle progress percentage
+        const percentage = (((start + chunkSize)/fileSize)*100).toFixed(0)
+        updateProgress(percentage)
+        
+        // create request chunk of size 4mb on each request
         const chunk = file.slice(start, end)
         const formData = new FormData()
         formData.append('file', chunk)
 
         const options = {
           method: 'POST',
-          body: formData
+          body: formData,
+          signal: controller.signal
         };
 
         try {
@@ -90,6 +102,22 @@ function Upload() {
     }
   }
 
+  const handleReloadDuringUpload = () => {
+    if (upload && fileInfo.fileName) {
+      // Send request to backend for Cleanup of dropped request in between
+      controller.abort()
+      const img = new Image();
+      img.src = `${apiBaseUrl}/upload-event/drop?fileName=${fileInfo.fileName}`
+    }
+  }
+
+  useExitPrompt(upload, handleReloadDuringUpload)
+
+  function updateProgress(percent) {
+    if(progressRef.current) progressRef.current.style.width = percent + '%'
+    if(percentageRef.current) percentageRef.current.textContent = percent + '%'
+  }
+
   const handleChange = (e) => {
     const file = e.target.files && e.target.files[0] || null
     if(file) {
@@ -107,6 +135,12 @@ function Upload() {
         or
         <input onChange={handleChange} ref={inputRef} type="file" id="images" accept="*" required />
       </label>
+      { upload && <div className="progress">
+        <div className="progress-container">
+          <div ref={progressRef} className="progress-bar"></div>
+          <div ref={percentageRef} className="progress-text"></div>
+        </div>
+      </div>}
       <div className="submit">
         <button disabled={upload} className={upload ? 'disabled' : ''} onClick={uploadLargeFile}>{upload ? 'Uploading...' : 'Submit'}</button>
       </div>
