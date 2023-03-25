@@ -1,5 +1,5 @@
 # upload-large-file
-Project consisting client on React and backend on node express server
+Using React on frontend and backend is on node express server
 
 It can be easily run on linux/macos machine(for now) and for windows few changes in code will have to do inside backend utils.js file
 
