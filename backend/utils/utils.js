@@ -102,7 +102,10 @@ var utils = {
             break;
         }
         
-        fs.unlinkSync(UPLOADED_FILE_PATH + "/" + fileName)
+        if (fs.existsSync(UPLOADED_FILE_PATH + "/" + fileName)) {
+          fs.unlinkSync(UPLOADED_FILE_PATH + "/" + fileName)
+        }
+
         cache.del(fileName)
         status = 1;
         message = "Upload Event dropped for - "+fileName

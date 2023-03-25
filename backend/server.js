@@ -20,21 +20,26 @@ app.post("/upload", async (req, res) => {
         let write = await utils.convertBusboyAndWriteStream(req, fileName)
         res.json({message: "File Successfully Uploaded", status: 1})
     } catch (error) {
-        console.log(error)
+        console.log("Error occured @ upload api",error)
         res.json({message: "Something bad happened!", status: 0})
     }
 });
 
 app.get("/upload-event/:type", async (req, res) => {
-    let { fileName, fileSize } = req.query;
-    let type = req.params.type
-
-    if(!fileName || !type || (type == 'start' && !fileSize)) return res.json({status: 0, message: "Parameters missing"})
-
-    let {status, message} = await utils.handleUploadEvent(fileName, type, +fileSize)
-    // console.log("STATUS -",status)
-    // console.log("MESSAGE -",message)
-    return res.json({status, message})
+    try {
+        let { fileName, fileSize } = req.query;
+        let type = req.params.type
+    
+        if(!fileName || !type || (type == 'start' && !fileSize)) return res.json({status: 0, message: "Parameters missing"})
+    
+        let {status, message} = await utils.handleUploadEvent(fileName, type, +fileSize)
+        // console.log("STATUS -",status)
+        // console.log("MESSAGE -",message)
+        return res.json({status, message})
+    } catch (error) {
+        console.log("Error occured @ upload-event api",error)
+        res.json({status: 0, message: "Something bad happened"})
+    }
 })
 
 app.all('*', (req, res) => {
