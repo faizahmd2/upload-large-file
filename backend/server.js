@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require('cors');
 const busboy = require('connect-busboy');
-var utils = require('./utils/utils')
+const utils = require('./utils/utils')
 
 app.use(busboy());
 

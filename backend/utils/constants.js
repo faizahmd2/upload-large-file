@@ -1,0 +1,1 @@
+exports.UPLOAD_START_EVENT_CACHE_TIME = 30*60000 // 30 Minutes

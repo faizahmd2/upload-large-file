@@ -3,6 +3,7 @@ import './upload.css'
 import useExitPrompt from './useExitPrompt';
 const apiBaseUrl = 'http://localhost:4100'
 let controller = new AbortController()
+const UPLOAD_CHUNK_SIZE_PER_REQUEST = 4 // In Megabite
 
 function Upload() {
   const [upload, setUpload] = useState(false)
@@ -19,8 +20,8 @@ function Upload() {
       const fileSize = fileInfo.fileSize;
       const SIZE_IN_MEGABITE = fileSize / CHUNK_SIZE
 
-      const chunkCount = Math.ceil(SIZE_IN_MEGABITE / 4)
-      const chunkSize = 4 * CHUNK_SIZE
+      const chunkCount = Math.ceil(SIZE_IN_MEGABITE / UPLOAD_CHUNK_SIZE_PER_REQUEST)
+      const chunkSize = UPLOAD_CHUNK_SIZE_PER_REQUEST * CHUNK_SIZE
       const fileName = fileInfo.fileName
 
       // Initiate upload event

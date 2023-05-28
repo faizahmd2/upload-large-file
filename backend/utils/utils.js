@@ -3,6 +3,7 @@ const path = require('path')
 const UPLOADED_FILE_PATH = path.resolve(__dirname,'../files')
 const { exec } = require('child_process');
 const cache = require('memory-cache');
+const constants = require('./constants')
 
 var utils = {
   convertBusboyAndWriteStream: function(request, fileName) {
@@ -80,7 +81,7 @@ var utils = {
           break;
         }
 
-        cache.put(fileName, true)
+        cache.put(fileName, true, constants.UPLOAD_START_EVENT_CACHE_TIME)
         status = 1;
         message = "Upload Event Initiated of file - "+fileName
         break;
